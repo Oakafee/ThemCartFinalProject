@@ -1,0 +1,15 @@
+{
+  "name": "firsttry",
+  "version": "1.0.0",
+  "description": "first attempt at Thematic Cartography final project maybe with leaflet",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Jesse",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "leaflet": "^1.7.1"
+  }
+}
