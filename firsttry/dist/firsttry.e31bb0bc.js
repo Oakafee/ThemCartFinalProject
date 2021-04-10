@@ -190,7 +190,12 @@ module.exports = reloadCSS;
         module.hot.dispose(reloadCSS);
         module.hot.accept(reloadCSS);
       
-},{"./images\\layers.png":[["layers.69e4b0dc.png","node_modules/leaflet/dist/images/layers.png"],"node_modules/leaflet/dist/images/layers.png"],"./images\\layers-2x.png":[["layers-2x.c9958c4f.png","node_modules/leaflet/dist/images/layers-2x.png"],"node_modules/leaflet/dist/images/layers-2x.png"],"./images\\marker-icon.png":[["marker-icon.3caa7cec.png","node_modules/leaflet/dist/images/marker-icon.png"],"node_modules/leaflet/dist/images/marker-icon.png"],"_css_loader":"../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"node_modules/leaflet/dist/leaflet-src.js":[function(require,module,exports) {
+},{"./images\\layers.png":[["layers.69e4b0dc.png","node_modules/leaflet/dist/images/layers.png"],"node_modules/leaflet/dist/images/layers.png"],"./images\\layers-2x.png":[["layers-2x.c9958c4f.png","node_modules/leaflet/dist/images/layers-2x.png"],"node_modules/leaflet/dist/images/layers-2x.png"],"./images\\marker-icon.png":[["marker-icon.3caa7cec.png","node_modules/leaflet/dist/images/marker-icon.png"],"node_modules/leaflet/dist/images/marker-icon.png"],"_css_loader":"../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"styles.css":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"node_modules/leaflet/dist/leaflet-src.js":[function(require,module,exports) {
 var define;
 var global = arguments[3];
 /* @preserve
@@ -16056,42 +16061,88 @@ module.exports.default = axios;
 
 },{"./utils":"node_modules/axios/lib/utils.js","./helpers/bind":"node_modules/axios/lib/helpers/bind.js","./core/Axios":"node_modules/axios/lib/core/Axios.js","./core/mergeConfig":"node_modules/axios/lib/core/mergeConfig.js","./defaults":"node_modules/axios/lib/defaults.js","./cancel/Cancel":"node_modules/axios/lib/cancel/Cancel.js","./cancel/CancelToken":"node_modules/axios/lib/cancel/CancelToken.js","./cancel/isCancel":"node_modules/axios/lib/cancel/isCancel.js","./helpers/spread":"node_modules/axios/lib/helpers/spread.js","./helpers/isAxiosError":"node_modules/axios/lib/helpers/isAxiosError.js"}],"node_modules/axios/index.js":[function(require,module,exports) {
 module.exports = require('./lib/axios');
-},{"./lib/axios":"node_modules/axios/lib/axios.js"}],"index.js":[function(require,module,exports) {
+},{"./lib/axios":"node_modules/axios/lib/axios.js"}],"constants.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+var _default = {
+  HELLO: 'hello world',
+  BASEMAP_URL: 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
+  FL_COUNTIES_URL: 'https://fl-counties.s3.us-east-2.amazonaws.com/florida-counties-json.geojson',
+  CIRCLE_SF: 10
+};
+exports.default = _default;
+},{}],"index.js":[function(require,module,exports) {
 "use strict";
 
 require("leaflet/dist/leaflet.css");
+
+require("./styles.css");
 
 var _leaflet2 = _interopRequireDefault(require("leaflet"));
 
 var _axios = _interopRequireDefault(require("axios"));
 
+var _constants = _interopRequireDefault(require("./constants"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var njMap = _leaflet2.default.map('mapid').setView([40.4, -74.6], 8);
+var flMap = _leaflet2.default.map('mapid').setView([28.0, -84.0], 6);
 
-var muniData = {};
-var muniLayer = {};
+var countyData = {};
+var countyLayer = {};
 
-function addMuniData() {
-  muniLayer = _leaflet2.default.geoJSON(muniData).addTo(njMap);
-  console.log(muniData);
+function createMap() {
+  _leaflet2.default.tileLayer(_constants.default.BASEMAP_URL, {
+    maxZoom: 18,
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' + 'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1
+  }).addTo(flMap);
+}
+
+function loadCountyData() {
+  var loading = document.querySelector('.loading');
+  loading.classList.remove('s-hidden');
+
+  _axios.default.get(_constants.default.FL_COUNTIES_URL).then(function (response) {
+    countyData = response.data;
+    addCountyData();
+    loading.classList.add('s-hidden');
+  }).catch(function (error) {
+    console.log(error);
+  });
+}
+
+function addCountyData() {
+  countyLayer = _leaflet2.default.geoJSON(countyData).addTo(flMap);
+  console.log(_constants.default.HELLO);
+  drawCenterSymbols();
 }
 
 ;
 
-_leaflet2.default.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-  maxZoom: 18,
-  attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' + 'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-  id: 'mapbox/streets-v11',
-  tileSize: 512,
-  zoomOffset: -1
-}).addTo(njMap);
+function drawCenterSymbols() {
+  countyData.features.forEach(function (feature) {
+    var center = _leaflet2.default.polygon(feature.geometry.coordinates).getBounds().getCenter(); //console.log(feature.properties);
 
-_axios.default.get('https://opendata.arcgis.com/datasets/3d5d1db8a1b34b418c331f4ce1fd0fef_2.geojson').then(function (response) {
-  muniData = response.data;
-  addMuniData();
-});
-},{"leaflet/dist/leaflet.css":"node_modules/leaflet/dist/leaflet.css","leaflet":"node_modules/leaflet/dist/leaflet-src.js","axios":"node_modules/axios/index.js"}],"../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+
+    var radius = _constants.default.CIRCLE_SF * feature.properties.POP2000 / feature.properties.SQMI;
+
+    _leaflet2.default.circle([center.lng, center.lat], {
+      'radius': radius
+    }).addTo(flMap);
+  });
+}
+
+;
+createMap();
+loadCountyData();
+},{"leaflet/dist/leaflet.css":"node_modules/leaflet/dist/leaflet.css","./styles.css":"styles.css","leaflet":"node_modules/leaflet/dist/leaflet-src.js","axios":"node_modules/axios/index.js","./constants":"constants.js"}],"../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -16119,7 +16170,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52743" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60964" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

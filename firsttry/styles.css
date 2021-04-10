@@ -1,0 +1,11 @@
+.fl-map {
+	width: 600px;
+	height: 600px;
+}
+.loading {
+	position: absolute;
+	z-index: 99999999;
+}
+.s-hidden {
+	display: none;
+}

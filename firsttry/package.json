@@ -4,7 +4,9 @@
   "description": "first attempt at Thematic Cartography final project maybe with leaflet",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+	"start": "parcel index.html",
+	"build": "parcel build --public-url . index.html"	
   },
   "author": "Jesse",
   "license": "ISC",
