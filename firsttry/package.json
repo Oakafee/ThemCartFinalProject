@@ -5,13 +5,16 @@
   "main": "index.js",
   "scripts": {
     "test": "test",
-	"start": "parcel index.html",
-	"build": "parcel build --public-url . index.html"	
+    "start": "parcel index.html",
+    "build": "parcel build --public-url . index.html"
   },
   "author": "Jesse",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
     "leaflet": "^1.7.1"
+  },
+  "devDependencies": {
+    "sass": "^1.32.8"
   }
 }

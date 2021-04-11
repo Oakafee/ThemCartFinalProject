@@ -16070,9 +16070,18 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _default = {
   HELLO: 'hello world',
+  MAP_CENTER: [27.8, -84.0],
   BASEMAP_URL: 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
   FL_COUNTIES_URL: 'https://fl-counties.s3.us-east-2.amazonaws.com/florida-counties-json.geojson',
-  CIRCLE_SF: 10
+  COUNTY_OPTIONS: {
+    'style': {
+      'className': 'fl-map__counties'
+    }
+  },
+  OUTER_CIRCLE_CLASSNAME: 'fl-map__outer-circle',
+  INNER_CIRCLE_CLASSNAME: 'fl-map__inner-circle',
+  OUTER_CIRCLE_SF: 3,
+  INNER_CIRCLE_SF: 1
 };
 exports.default = _default;
 },{}],"index.js":[function(require,module,exports) {
@@ -16090,7 +16099,12 @@ var _constants = _interopRequireDefault(require("./constants"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var flMap = _leaflet2.default.map('mapid').setView([28.0, -84.0], 6);
+var flMap = _leaflet2.default.map('mapid', {
+  center: _constants.default.MAP_CENTER,
+  zoom: 7,
+  zoomControl: false,
+  scrollWheelZoom: false
+});
 
 var countyData = {};
 var countyLayer = {};
@@ -16119,7 +16133,9 @@ function loadCountyData() {
 }
 
 function addCountyData() {
-  countyLayer = _leaflet2.default.geoJSON(countyData).addTo(flMap);
+  countyLayer = _leaflet2.default.geoJSON(countyData, _constants.default.COUNTY_OPTIONS).bindPopup(function (layer) {
+    return layer.feature.properties.POP2000;
+  }).addTo(flMap);
   console.log(_constants.default.HELLO);
   drawCenterSymbols();
 }
@@ -16131,17 +16147,33 @@ function drawCenterSymbols() {
     var center = _leaflet2.default.polygon(feature.geometry.coordinates).getBounds().getCenter(); //console.log(feature.properties);
 
 
-    var radius = _constants.default.CIRCLE_SF * feature.properties.POP2000 / feature.properties.SQMI;
+    var popDensity = feature.properties.POP2000 / feature.properties.SQMI;
 
     _leaflet2.default.circle([center.lng, center.lat], {
-      'radius': radius
+      'radius': _constants.default.OUTER_CIRCLE_SF * popDensity + 3000,
+      'className': _constants.default.OUTER_CIRCLE_CLASSNAME
+    }).addTo(flMap);
+
+    _leaflet2.default.circle([center.lng, center.lat], {
+      'radius': _constants.default.INNER_CIRCLE_SF * popDensity,
+      'className': _constants.default.INNER_CIRCLE_CLASSNAME
     }).addTo(flMap);
   });
 }
 
 ;
+
+function dressItUp() {
+  _leaflet2.default.control.scale().addTo(flMap);
+
+  _leaflet2.default.control.zoom({
+    'position': 'topright'
+  }).addTo(flMap);
+}
+
 createMap();
 loadCountyData();
+dressItUp();
 },{"leaflet/dist/leaflet.css":"node_modules/leaflet/dist/leaflet.css","./styles.css":"styles.css","leaflet":"node_modules/leaflet/dist/leaflet-src.js","axios":"node_modules/axios/index.js","./constants":"constants.js"}],"../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -16170,7 +16202,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60964" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63253" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

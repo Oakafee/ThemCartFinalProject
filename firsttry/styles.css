@@ -1,11 +1,34 @@
 .fl-map {
-	width: 600px;
-	height: 600px;
+	width: 800px;
+	height: 700px;
+}
+.fl-map__counties {
+	fill: rgba(233, 255, 189, 1);
+	fill-opacity: 1;
+	stroke: gray;
+	stroke-width: 0.6px;
+}
+.fl-map__outer-circle {
+	stroke: none;
+	fill: red;
+	fill-opacity: 1;
+}
+.fl-map__inner-circle {
+	stroke: none;
+	fill: rgba(233, 255, 189, 1);
+	fill-opacity: 1;
 }
 .loading {
 	position: absolute;
-	z-index: 99999999;
+	z-index: 401;
 }
 .s-hidden {
 	display: none;
 }
+.north-arrow {
+	position: absolute;
+	bottom: 8%;
+	left: 3%;
+	z-index: 400;
+}
+	

@@ -4,7 +4,12 @@ import L from 'leaflet';
 import axios from 'axios';
 import constants from './constants';
 
-	let flMap = L.map('mapid').setView([28.0, -84.0], 6);
+	let flMap = L.map('mapid', {
+		center: constants.MAP_CENTER,
+		zoom: 7,
+		zoomControl: false,
+		scrollWheelZoom: false
+	});
 	let countyData = {};
 	let countyLayer = {};
 
@@ -36,7 +41,11 @@ import constants from './constants';
 	}
 
 	function addCountyData() {
-		countyLayer = L.geoJSON(countyData).addTo(flMap);
+		countyLayer = L.geoJSON(countyData, constants.COUNTY_OPTIONS)
+			.bindPopup(function(layer) {
+				return layer.feature.properties.POP2000
+			})
+			.addTo(flMap);
 		console.log(constants.HELLO);
 		drawCenterSymbols();
 	};
@@ -44,15 +53,27 @@ import constants from './constants';
 	function drawCenterSymbols() {
 		countyData.features.forEach(feature => {
 
-			let center = L.polygon(feature.geometry.coordinates).getBounds().getCenter();
+			const center = L.polygon(feature.geometry.coordinates).getBounds().getCenter();
 			//console.log(feature.properties);
-			let radius = constants.CIRCLE_SF*feature.properties.POP2000/feature.properties.SQMI;
-			L.circle([center.lng, center.lat], {'radius': radius}).addTo(flMap);
+			const popDensity = feature.properties.POP2000/feature.properties.SQMI;
+			L.circle([center.lng, center.lat], {
+				'radius': constants.OUTER_CIRCLE_SF*popDensity + 3000,
+				'className': constants.OUTER_CIRCLE_CLASSNAME
+			}).addTo(flMap);
+			L.circle([center.lng, center.lat], {
+				'radius': constants.INNER_CIRCLE_SF * popDensity,
+				'className': constants.INNER_CIRCLE_CLASSNAME
+			}).addTo(flMap);
 		})
 	};
+	function dressItUp() {
+		L.control.scale().addTo(flMap);
+		L.control.zoom({'position': 'topright'}).addTo(flMap);
+	}
 	
 	createMap();
 	loadCountyData();
+	dressItUp();
 
 
 
