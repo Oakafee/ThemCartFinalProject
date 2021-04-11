@@ -1,3 +1,18 @@
+.container {
+	width: 820px;
+	margin: 0 auto;
+	position: relative;
+}	
+.map-border {
+	border: 1px solid black;
+	padding: 10px;
+}
+.map-title {
+	margin: 0 0 5px 0;
+	padding: 0;
+	font-size: 18pt;
+	text-align: center;
+}
 .fl-map {
 	width: 800px;
 	height: 700px;
@@ -27,8 +42,32 @@
 }
 .north-arrow {
 	position: absolute;
-	bottom: 8%;
+	bottom: 12%;
 	left: 3%;
 	z-index: 400;
 }
-	
+.legend {
+	position: absolute;
+	bottom: 50%;
+	left: 3%;
+	z-index: 400;
+	background-color: white;
+	border: 1px solid black;
+	padding: 10px;
+}
+.legend h1 {
+	font-size: 12pt;
+}
+.popup h1 {
+	font-size: 12pt;
+	margin: 0;
+}
+.popup ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+.attribution {
+	margin: 2px;
+	font-size: 10pt;
+}

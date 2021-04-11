@@ -16073,11 +16073,7 @@ var _default = {
   MAP_CENTER: [27.8, -84.0],
   BASEMAP_URL: 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
   FL_COUNTIES_URL: 'https://fl-counties.s3.us-east-2.amazonaws.com/florida-counties-json.geojson',
-  COUNTY_OPTIONS: {
-    'style': {
-      'className': 'fl-map__counties'
-    }
-  },
+  COUNTIES_CLASSNAME: 'fl-map__counties',
   OUTER_CIRCLE_CLASSNAME: 'fl-map__outer-circle',
   INNER_CIRCLE_CLASSNAME: 'fl-map__inner-circle',
   OUTER_CIRCLE_SF: 3,
@@ -16103,7 +16099,8 @@ var flMap = _leaflet2.default.map('mapid', {
   center: _constants.default.MAP_CENTER,
   zoom: 7,
   zoomControl: false,
-  scrollWheelZoom: false
+  scrollWheelZoom: false,
+  attributionControl: false
 });
 
 var countyData = {};
@@ -16133,8 +16130,13 @@ function loadCountyData() {
 }
 
 function addCountyData() {
-  countyLayer = _leaflet2.default.geoJSON(countyData, _constants.default.COUNTY_OPTIONS).bindPopup(function (layer) {
-    return layer.feature.properties.POP2000;
+  countyLayer = _leaflet2.default.geoJSON(countyData, {
+    'style': {
+      'className': _constants.default.COUNTIES_CLASSNAME
+    },
+    'onEachFeature': function onEachFeature(feature, layer) {
+      layer.bindPopup(writePopup(feature.properties));
+    }
   }).addTo(flMap);
   console.log(_constants.default.HELLO);
   drawCenterSymbols();
@@ -16152,7 +16154,7 @@ function drawCenterSymbols() {
     _leaflet2.default.circle([center.lng, center.lat], {
       'radius': _constants.default.OUTER_CIRCLE_SF * popDensity + 3000,
       'className': _constants.default.OUTER_CIRCLE_CLASSNAME
-    }).addTo(flMap);
+    }).bindPopup(writePopup(feature.properties)).addTo(flMap);
 
     _leaflet2.default.circle([center.lng, center.lat], {
       'radius': _constants.default.INNER_CIRCLE_SF * popDensity,
@@ -16162,6 +16164,12 @@ function drawCenterSymbols() {
 }
 
 ;
+
+function writePopup(props) {
+  var prettyPop = props.POP2000.toLocaleString();
+  var density = Math.round(props.POP2000 / props.SQMI);
+  return "\n\t\t\t<div class='popup'>\n\t\t\t\t<h1>".concat(props.NAME, " County</h1>\n\t\t\t\t<ul>\n\t\t\t\t\t<li><strong>Population (2000):</strong> ").concat(prettyPop, " </li>\n\t\t\t\t\t<li><strong>Density:</strong> ").concat(density, " people / mi<sup>2</sup></li>\n\t\t\t\t</ul>\n\t\t\t</div>\n\t\t");
+}
 
 function dressItUp() {
   _leaflet2.default.control.scale().addTo(flMap);
@@ -16202,7 +16210,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63253" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49747" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

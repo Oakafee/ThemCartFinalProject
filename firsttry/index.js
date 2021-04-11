@@ -8,7 +8,8 @@ import constants from './constants';
 		center: constants.MAP_CENTER,
 		zoom: 7,
 		zoomControl: false,
-		scrollWheelZoom: false
+		scrollWheelZoom: false,
+		attributionControl: false,
 	});
 	let countyData = {};
 	let countyLayer = {};
@@ -41,11 +42,14 @@ import constants from './constants';
 	}
 
 	function addCountyData() {
-		countyLayer = L.geoJSON(countyData, constants.COUNTY_OPTIONS)
-			.bindPopup(function(layer) {
-				return layer.feature.properties.POP2000
-			})
-			.addTo(flMap);
+		countyLayer = L.geoJSON(countyData, {
+			'style': {
+				'className': constants.COUNTIES_CLASSNAME,
+			},
+			'onEachFeature': (feature, layer) => {
+				layer.bindPopup(writePopup(feature.properties));
+			},
+		}).addTo(flMap);
 		console.log(constants.HELLO);
 		drawCenterSymbols();
 	};
@@ -58,14 +62,31 @@ import constants from './constants';
 			const popDensity = feature.properties.POP2000/feature.properties.SQMI;
 			L.circle([center.lng, center.lat], {
 				'radius': constants.OUTER_CIRCLE_SF*popDensity + 3000,
-				'className': constants.OUTER_CIRCLE_CLASSNAME
-			}).addTo(flMap);
+				'className': constants.OUTER_CIRCLE_CLASSNAME,
+			})
+				.bindPopup(writePopup(feature.properties))
+				.addTo(flMap);
 			L.circle([center.lng, center.lat], {
 				'radius': constants.INNER_CIRCLE_SF * popDensity,
 				'className': constants.INNER_CIRCLE_CLASSNAME
 			}).addTo(flMap);
 		})
 	};
+	
+	function writePopup(props) {
+		const prettyPop = props.POP2000.toLocaleString();
+		const density = Math.round(props.POP2000/props.SQMI);
+		return `
+			<div class='popup'>
+				<h1>${ props.NAME } County</h1>
+				<ul>
+					<li><strong>Population (2000):</strong> ${prettyPop} </li>
+					<li><strong>Density:</strong> ${density} people / mi<sup>2</sup></li>
+				</ul>
+			</div>
+		`;
+	}
+	
 	function dressItUp() {
 		L.control.scale().addTo(flMap);
 		L.control.zoom({'position': 'topright'}).addTo(flMap);
@@ -74,6 +95,7 @@ import constants from './constants';
 	createMap();
 	loadCountyData();
 	dressItUp();
+
 
 
 
