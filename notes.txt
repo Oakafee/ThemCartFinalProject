@@ -1,0 +1,20 @@
+leaflet limitations:
+- cannot set zoom/scale exactly...only certain pre-defined levels
+- Hard to customize appearance of scalebar
+- No built in north arrow, must be custom added
+
+d3 stuff
+one path or multiple path for polygons
+https://d3-wiki.readthedocs.io/zh_CN/master/Geo-Paths/
+
+d3 geographic
+https://www.d3indepth.com/geographic/
+
+d3 geographic projections
+https://sodocumentation.net/d3-js/topic/9001/d3-projections
+
+d3 basic
+https://www.dashingd3js.com/d3-tutorial/adding-a-dom-element-using-d3-js
+
+
+
