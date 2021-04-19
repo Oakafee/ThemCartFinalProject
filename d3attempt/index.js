@@ -27,17 +27,48 @@ function addCountyData() {
 
 	var svg = d3.select("body")
     .append("svg")
-    .attr("width", 500)
-    .attr("height", 500)
-	.attr("viewBox", "-100 -50 80 80")
+    .attr("width", constants.MAP_WIDTH)
+    .attr("height", constants.MAP_HEIGHT)
+	.attr("viewBox", "50 -250 500 500")
 	.attr("class", "fl-shape");
 	
-	var projection = d3.geoIdentity().reflectY(true);
+	var projection = d3.geoTransverseMercator()
+		.rotate([81, -24 - 20 / 60])
+		.scale(4000);
+	// from https://github.com/veltman/d3-stateplane
 	
+	/*
 	svg.append("path")
 		.datum({type: "FeatureCollection", features: countyData.features})
 		.attr("d", d3.geoPath().projection(projection));
-	console.log(svg);
+	*/
+	
+	svg.selectAll("path")
+		.data(countyData.features)
+		.enter().append("path")
+		.attr("d", d3.geoPath().projection(projection));
+		
+	svg.append("g")
+		  .attr("fill", "brown")
+		  .attr("fill-opacity", 0.5)
+		  .attr("stroke", "#fff")
+		  .attr("stroke-width", 0.5)
+		.selectAll("circle")
+		.data(countyData.features
+			.filter(d => d.properties.POP2000)
+			.sort((a, b) => d3.descending(a.value, b.value)))
+		.join("circle")
+		  .attr("transform", d => {
+			  const x = d.geometry.coordinates[0][0][0];
+			  const y = d.geometry.coordinates[0][0][1];
+			  console.log(x, y);
+			  if (typeof x != 'object') {
+				return `translate(${(500 + x)},${y})`;			  					
+			  }
+			  return `translate(100, 200)`;
+
+		  })
+		  .attr("r", d => d.properties.POP2000/50000);
 }
 
 loadCountyData();

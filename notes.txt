@@ -16,5 +16,19 @@ https://sodocumentation.net/d3-js/topic/9001/d3-projections
 d3 basic
 https://www.dashingd3js.com/d3-tutorial/adding-a-dom-element-using-d3-js
 
+d3 dot map example
+https://www.dashingd3js.com/d3-tutorial/adding-a-dom-element-using-d3-js
 
+​​​​
+http://thematic-cart-final-project.s3-website-us-east-1.amazonaws.com/
+
+0: -87.23841818181819
+​​​​​​​​
+1: 30.60618181818182
+
+colors
+blue rgba(159, 193, 221, 1)
+dark green rgba(75, 103, 104, 1)
+light green rgba(207,216,153,1)
+grey rgba(136,146,156,1)
 

@@ -33097,6 +33097,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 var _default = {
   HELLO: 'hello world',
+  MAP_HEIGHT: 500,
+  MAP_WIDTH: 1000,
   MAP_CENTER: [27.8, -84.0],
   BASEMAP_URL: 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw',
   FL_COUNTIES_URL: 'https://fl-counties.s3.us-east-2.amazonaws.com/florida-counties-json.geojson',
@@ -33124,6 +33126,8 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 var countyData = {};
 var svg = {};
 
@@ -33142,13 +33146,33 @@ function loadCountyData() {
 }
 
 function addCountyData() {
-  var svg = d3.select("body").append("svg").attr("width", 500).attr("height", 500).attr("viewBox", "-100 -50 80 80").attr("class", "fl-shape");
-  var projection = d3.geoIdentity().reflectY(true);
-  svg.append("path").datum({
-    type: "FeatureCollection",
-    features: countyData.features
-  }).attr("d", d3.geoPath().projection(projection));
-  console.log(svg);
+  var svg = d3.select("body").append("svg").attr("width", _constants.default.MAP_WIDTH).attr("height", _constants.default.MAP_HEIGHT).attr("viewBox", "50 -250 500 500").attr("class", "fl-shape");
+  var projection = d3.geoTransverseMercator().rotate([81, -24 - 20 / 60]).scale(4000); // from https://github.com/veltman/d3-stateplane
+
+  /*
+  svg.append("path")
+  	.datum({type: "FeatureCollection", features: countyData.features})
+  	.attr("d", d3.geoPath().projection(projection));
+  */
+
+  svg.selectAll("path").data(countyData.features).enter().append("path").attr("d", d3.geoPath().projection(projection));
+  svg.append("g").attr("fill", "brown").attr("fill-opacity", 0.5).attr("stroke", "#fff").attr("stroke-width", 0.5).selectAll("circle").data(countyData.features.filter(function (d) {
+    return d.properties.POP2000;
+  }).sort(function (a, b) {
+    return d3.descending(a.value, b.value);
+  })).join("circle").attr("transform", function (d) {
+    var x = d.geometry.coordinates[0][0][0];
+    var y = d.geometry.coordinates[0][0][1];
+    console.log(x, y);
+
+    if (_typeof(x) != 'object') {
+      return "translate(".concat(500 + x, ",").concat(y, ")");
+    }
+
+    return "translate(100, 200)";
+  }).attr("r", function (d) {
+    return d.properties.POP2000 / 50000;
+  });
 }
 
 loadCountyData();
@@ -33180,7 +33204,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "56089" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62496" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
