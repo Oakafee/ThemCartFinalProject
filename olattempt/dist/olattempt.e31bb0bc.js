@@ -105617,7 +105617,7 @@ function getFeatureStyle(feature) {
     fill: new _style.Fill(_constants.default.COUNTIES_STYLE.FILL)
   }), new _style.Style({
     image: new _style.Circle({
-      radius: 10,
+      radius: Math.sqrt(popDensity / Math.PI),
       fill: new _style.Fill({
         color: [0, 128, 255, .3]
       }),
@@ -105689,7 +105689,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57424" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54881" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

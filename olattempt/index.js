@@ -62,7 +62,7 @@ function getFeatureStyle(feature) {
 		  }),
 		new Style({
 			image: new Circle({
-			  radius: 10,
+			  radius: Math.sqrt(popDensity/Math.PI),
 			  fill: new Fill ({
 				color: [0,128,255,.3],
 			  }),
