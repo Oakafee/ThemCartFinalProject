@@ -105331,7 +105331,103 @@ var _VectorTile = _interopRequireDefault(require("./layer/VectorTile.js"));
 var _WebGLPoints = _interopRequireDefault(require("./layer/WebGLPoints.js"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-},{"./layer/Graticule.js":"node_modules/ol/layer/Graticule.js","./layer/Group.js":"node_modules/ol/layer/Group.js","./layer/Heatmap.js":"node_modules/ol/layer/Heatmap.js","./layer/Image.js":"node_modules/ol/layer/Image.js","./layer/Layer.js":"node_modules/ol/layer/Layer.js","./layer/MapboxVector.js":"node_modules/ol/layer/MapboxVector.js","./layer/Tile.js":"node_modules/ol/layer/Tile.js","./layer/Vector.js":"node_modules/ol/layer/Vector.js","./layer/VectorImage.js":"node_modules/ol/layer/VectorImage.js","./layer/VectorTile.js":"node_modules/ol/layer/VectorTile.js","./layer/WebGLPoints.js":"node_modules/ol/layer/WebGLPoints.js"}],"constants.js":[function(require,module,exports) {
+},{"./layer/Graticule.js":"node_modules/ol/layer/Graticule.js","./layer/Group.js":"node_modules/ol/layer/Group.js","./layer/Heatmap.js":"node_modules/ol/layer/Heatmap.js","./layer/Image.js":"node_modules/ol/layer/Image.js","./layer/Layer.js":"node_modules/ol/layer/Layer.js","./layer/MapboxVector.js":"node_modules/ol/layer/MapboxVector.js","./layer/Tile.js":"node_modules/ol/layer/Tile.js","./layer/Vector.js":"node_modules/ol/layer/Vector.js","./layer/VectorImage.js":"node_modules/ol/layer/VectorImage.js","./layer/VectorTile.js":"node_modules/ol/layer/VectorTile.js","./layer/WebGLPoints.js":"node_modules/ol/layer/WebGLPoints.js"}],"node_modules/ol/geom.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+Object.defineProperty(exports, "Circle", {
+  enumerable: true,
+  get: function () {
+    return _Circle.default;
+  }
+});
+Object.defineProperty(exports, "Geometry", {
+  enumerable: true,
+  get: function () {
+    return _Geometry.default;
+  }
+});
+Object.defineProperty(exports, "GeometryCollection", {
+  enumerable: true,
+  get: function () {
+    return _GeometryCollection.default;
+  }
+});
+Object.defineProperty(exports, "LinearRing", {
+  enumerable: true,
+  get: function () {
+    return _LinearRing.default;
+  }
+});
+Object.defineProperty(exports, "LineString", {
+  enumerable: true,
+  get: function () {
+    return _LineString.default;
+  }
+});
+Object.defineProperty(exports, "MultiLineString", {
+  enumerable: true,
+  get: function () {
+    return _MultiLineString.default;
+  }
+});
+Object.defineProperty(exports, "MultiPoint", {
+  enumerable: true,
+  get: function () {
+    return _MultiPoint.default;
+  }
+});
+Object.defineProperty(exports, "MultiPolygon", {
+  enumerable: true,
+  get: function () {
+    return _MultiPolygon.default;
+  }
+});
+Object.defineProperty(exports, "Point", {
+  enumerable: true,
+  get: function () {
+    return _Point.default;
+  }
+});
+Object.defineProperty(exports, "Polygon", {
+  enumerable: true,
+  get: function () {
+    return _Polygon.default;
+  }
+});
+Object.defineProperty(exports, "SimpleGeometry", {
+  enumerable: true,
+  get: function () {
+    return _SimpleGeometry.default;
+  }
+});
+
+var _Circle = _interopRequireDefault(require("./geom/Circle.js"));
+
+var _Geometry = _interopRequireDefault(require("./geom/Geometry.js"));
+
+var _GeometryCollection = _interopRequireDefault(require("./geom/GeometryCollection.js"));
+
+var _LinearRing = _interopRequireDefault(require("./geom/LinearRing.js"));
+
+var _LineString = _interopRequireDefault(require("./geom/LineString.js"));
+
+var _MultiLineString = _interopRequireDefault(require("./geom/MultiLineString.js"));
+
+var _MultiPoint = _interopRequireDefault(require("./geom/MultiPoint.js"));
+
+var _MultiPolygon = _interopRequireDefault(require("./geom/MultiPolygon.js"));
+
+var _Point = _interopRequireDefault(require("./geom/Point.js"));
+
+var _Polygon = _interopRequireDefault(require("./geom/Polygon.js"));
+
+var _SimpleGeometry = _interopRequireDefault(require("./geom/SimpleGeometry.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+},{"./geom/Circle.js":"node_modules/ol/geom/Circle.js","./geom/Geometry.js":"node_modules/ol/geom/Geometry.js","./geom/GeometryCollection.js":"node_modules/ol/geom/GeometryCollection.js","./geom/LinearRing.js":"node_modules/ol/geom/LinearRing.js","./geom/LineString.js":"node_modules/ol/geom/LineString.js","./geom/MultiLineString.js":"node_modules/ol/geom/MultiLineString.js","./geom/MultiPoint.js":"node_modules/ol/geom/MultiPoint.js","./geom/MultiPolygon.js":"node_modules/ol/geom/MultiPolygon.js","./geom/Point.js":"node_modules/ol/geom/Point.js","./geom/Polygon.js":"node_modules/ol/geom/Polygon.js","./geom/SimpleGeometry.js":"node_modules/ol/geom/SimpleGeometry.js"}],"constants.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -105342,7 +105438,20 @@ var _default = {
   FL_COUNTIES_URL: 'https://fl-counties.s3.us-east-2.amazonaws.com/florida-counties-json.geojson',
   MAP_CENTER: [-84.0, 27.8],
   // order of coordinates reverse from leaflet
-  MAP_ZOOM: 7
+  //MAP_ZOOM: 7,
+  MAP_RESOLUTION: 0.018,
+  //scale units per pixel
+  COUNTIES_STYLE: {
+    STROKE: {
+      color: 'gray',
+      width: 0.6
+    },
+    FILL: {
+      color: 'rgba(233,255,189,1)',
+      opacity: 1
+    }
+  },
+  OUTER_CIRCLE_SF: 3
 };
 exports.default = _default;
 },{}],"node_modules/ol/proj/proj4.js":[function(require,module,exports) {
@@ -105453,6 +105562,10 @@ var _layer = require("ol/layer");
 
 var _style = require("ol/style");
 
+var _geom = require("ol/geom");
+
+var _extent = require("ol/extent");
+
 var _constants = _interopRequireDefault(require("./constants"));
 
 var _proj2 = require("ol/proj/proj4");
@@ -105467,11 +105580,15 @@ _proj.default.defs('EPSG:4269');
 var flMap = new _ol2.Map({
   target: 'map',
   layers: [new _layer.Tile({
-    source: new _source.OSM()
+    source: new _source.Stamen({
+      layer: 'toner-lite'
+    })
   })],
   view: new _ol2.View({
     center: _constants.default.MAP_CENTER,
-    zoom: _constants.default.MAP_ZOOM,
+    resolution: _constants.default.MAP_RESOLUTION,
+    //instead of zoom
+    //zoom: constants.MAP_ZOOM,
     projection: (0, _proj3.get)('EPSG:4269')
   })
 });
@@ -105491,6 +105608,45 @@ function loadCountyData() {
   });
 }
 
+function getFeatureStyle(feature) {
+  var popDensity = feature.get('POP2000') / feature.get('SQMI');
+  var center = (0, _extent.getCenter)(feature.getGeometry().getExtent()); //console.log(getCenter(feature.getGeometry().getExtent()));
+
+  return [new _style.Style({
+    stroke: new _style.Stroke(_constants.default.COUNTIES_STYLE.STROKE),
+    fill: new _style.Fill(_constants.default.COUNTIES_STYLE.FILL)
+  }), new _style.Style({
+    image: new _style.Circle({
+      radius: 10,
+      fill: new _style.Fill({
+        color: [0, 128, 255, .3]
+      }),
+      stroke: new _style.Stroke({
+        width: 1,
+        color: [0, 128, 255]
+      })
+    }),
+    geometry: new _geom.Point(center)
+  })
+  /*
+  new Style({
+  	image: new Circle({
+  	  'radius': constants.OUTER_CIRCLE_SF*popDensity + 3000,
+  	  //radius: Math.sqrt(feature.get('pop')/Math.PI) / 50, 
+  	  fill: new Fill ({
+  		color: [0,128,255,.3],
+  	  }),
+  	  stroke: new Stroke ({
+  		width: 1,
+  		color: [0,128,255],
+  	  })
+  	}),
+  	//geometry: new Point([-84.0, 27.8])
+  })
+  */
+  ];
+}
+
 function addCountyData() {
   var countiesSource = new _source.Vector({
     features: new _GeoJSON.default().readFeatures(countyData),
@@ -105499,21 +105655,13 @@ function addCountyData() {
   console.log(countiesSource);
   var countiesLayer = new _layer.Vector({
     source: countiesSource,
-    style: new _style.Style({
-      stroke: new _style.Stroke({
-        color: 'red',
-        width: 2
-      }),
-      fill: new _style.Fill({
-        color: 'rgba(255,0,0,0.2)'
-      })
-    })
+    style: getFeatureStyle
   });
   flMap.addLayer(countiesLayer);
 }
 
 loadCountyData(); //document.addEventListener('DOMContentLoaded', loadCountyData);
-},{"ol/ol.css":"node_modules/ol/ol.css","./styles.css":"styles.css","ol":"node_modules/ol/index.js","axios":"node_modules/axios/index.js","proj4":"node_modules/proj4/lib/index.js","ol/format/GeoJSON":"node_modules/ol/format/GeoJSON.js","ol/source":"node_modules/ol/source.js","ol/layer":"node_modules/ol/layer.js","ol/style":"node_modules/ol/style.js","./constants":"constants.js","ol/proj/proj4":"node_modules/ol/proj/proj4.js","ol/proj":"node_modules/ol/proj.js"}],"../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"ol/ol.css":"node_modules/ol/ol.css","./styles.css":"styles.css","ol":"node_modules/ol/index.js","axios":"node_modules/axios/index.js","proj4":"node_modules/proj4/lib/index.js","ol/format/GeoJSON":"node_modules/ol/format/GeoJSON.js","ol/source":"node_modules/ol/source.js","ol/layer":"node_modules/ol/layer.js","ol/style":"node_modules/ol/style.js","ol/geom":"node_modules/ol/geom.js","ol/extent":"node_modules/ol/extent.js","./constants":"constants.js","ol/proj/proj4":"node_modules/ol/proj/proj4.js","ol/proj":"node_modules/ol/proj.js"}],"../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -105541,7 +105689,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59397" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57424" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
