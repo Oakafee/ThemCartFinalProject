@@ -32,3 +32,11 @@ dark green rgba(75, 103, 104, 1)
 light green rgba(207,216,153,1)
 grey rgba(136,146,156,1)
 
+osm stuff:
+
+- package is more complicated, importint vector seems more difficult
+- <canvas> vs <svg>: Can't do as much with CSS
+- compare file sizes
+- have to do coordinate transformation manually (using package)
+
+EPSG:4269
