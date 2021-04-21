@@ -1,17 +1,31 @@
-.container {
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+.fl-map__container {
 	width: 820px;
 	margin: 0 auto;
 	position: relative;
 }	
-.map-border {
-	border: 1px solid black;
-	padding: 10px;
+.fl-map__border {
+	border: 3px double black;
 }
-.map-title {
-	margin: 0 0 5px 0;
-	padding: 0;
-	font-size: 18pt;
-	text-align: center;
+.fl-map__title {
+	position: absolute;
+	bottom: 450px;
+	left: 130px;
+	background-color: rgba(255,255,255,0.4);
+	z-index: 401;
+}
+.fl-map__title h1 {
+	font-weight: normal;
+	text-decoration: underline;
+	font-size: 21pt;
+	margin: 10px;
+}
+.fl-map__title h2 {
+	font-weight: normal;
+	font-size: 15pt;
+	margin: 0;
 }
 .fl-map {
 	width: 800px;
@@ -40,23 +54,30 @@
 .s-hidden {
 	display: none;
 }
-.north-arrow {
+.fl-map__legend {
 	position: absolute;
-	bottom: 12%;
-	left: 3%;
+	bottom: 150px;
+	left: 220px;
 	z-index: 400;
-}
-.legend {
-	position: absolute;
-	bottom: 50%;
-	left: 3%;
-	z-index: 400;
-	background-color: white;
-	border: 1px solid black;
+	background-color: rgba(255,255,255,0.4);
 	padding: 10px;
 }
-.legend h1 {
-	font-size: 12pt;
+.fl-map__legend h3 {
+	font-size: 14pt;
+	margin: 0 0 15px 0;
+	font-weight: normal;
+	font-family: Georgia, Times New Roman, serif;
+	text-align: center;
+}
+.fl-map__legend-cols {
+	display: flex;
+}
+.fl-map__legend-col-left {
+	text-align: center;
+	margin-right: 15px;
+}
+.fl-map__legend-item {
+	height: 35px;
 }
 .popup h1 {
 	font-size: 12pt;
@@ -67,7 +88,14 @@
 	margin: 0;
 	padding: 0;
 }
-.attribution {
-	margin: 2px;
-	font-size: 10pt;
+.fl-map__north-arrow {
+	position: absolute;
+	bottom: 72px;
+	left: 500px;
+	z-index: 400;
+	background-color: rgba(255,255,255,0.4);
+}
+.fl-map__attribution {
+	font-size: 9pt;
+	text-align: right;
 }

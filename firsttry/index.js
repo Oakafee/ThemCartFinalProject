@@ -60,14 +60,15 @@ import constants from './constants';
 			const center = L.polygon(feature.geometry.coordinates).getBounds().getCenter();
 			//console.log(feature.properties);
 			const popDensity = feature.properties.POP2000/feature.properties.SQMI;
-			L.circle([center.lng, center.lat], {
-				'radius': constants.OUTER_CIRCLE_SF*popDensity + 3000,
+			L.circleMarker([center.lng, center.lat], {
+				'radius': Math.sqrt(popDensity/Math.PI)*constants.OUTER_CIRCLE_SF+1.5,
+				// todo: clean up and make size dynamic
 				'className': constants.OUTER_CIRCLE_CLASSNAME,
 			})
 				.bindPopup(writePopup(feature.properties))
 				.addTo(flMap);
-			L.circle([center.lng, center.lat], {
-				'radius': constants.INNER_CIRCLE_SF * popDensity,
+			L.circleMarker([center.lng, center.lat], {
+				'radius': Math.sqrt(popDensity/Math.PI)*constants.INNER_CIRCLE_SF+0.5,
 				'className': constants.INNER_CIRCLE_CLASSNAME
 			}).addTo(flMap);
 		})

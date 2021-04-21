@@ -16076,8 +16076,8 @@ var _default = {
   COUNTIES_CLASSNAME: 'fl-map__counties',
   OUTER_CIRCLE_CLASSNAME: 'fl-map__outer-circle',
   INNER_CIRCLE_CLASSNAME: 'fl-map__inner-circle',
-  OUTER_CIRCLE_SF: 3,
-  INNER_CIRCLE_SF: 1
+  OUTER_CIRCLE_SF: 0.3,
+  INNER_CIRCLE_SF: 0.1
 };
 exports.default = _default;
 },{}],"index.js":[function(require,module,exports) {
@@ -16151,13 +16151,14 @@ function drawCenterSymbols() {
 
     var popDensity = feature.properties.POP2000 / feature.properties.SQMI;
 
-    _leaflet2.default.circle([center.lng, center.lat], {
-      'radius': _constants.default.OUTER_CIRCLE_SF * popDensity + 3000,
+    _leaflet2.default.circleMarker([center.lng, center.lat], {
+      'radius': Math.sqrt(popDensity / Math.PI) * _constants.default.OUTER_CIRCLE_SF + 1.5,
+      // todo: clean up and make size dynamic
       'className': _constants.default.OUTER_CIRCLE_CLASSNAME
     }).bindPopup(writePopup(feature.properties)).addTo(flMap);
 
-    _leaflet2.default.circle([center.lng, center.lat], {
-      'radius': _constants.default.INNER_CIRCLE_SF * popDensity,
+    _leaflet2.default.circleMarker([center.lng, center.lat], {
+      'radius': Math.sqrt(popDensity / Math.PI) * _constants.default.INNER_CIRCLE_SF + 0.5,
       'className': _constants.default.INNER_CIRCLE_CLASSNAME
     }).addTo(flMap);
   });
@@ -16210,7 +16211,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58972" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49689" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

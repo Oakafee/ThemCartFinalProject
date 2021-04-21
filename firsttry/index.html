@@ -4,15 +4,18 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>Thematic Cartography Final Project</title>
+    <title>Leaflet: Thematic Cartography Final Project</title>
   </head>
   <body>
-    <div id="app" class="container">
-		<div class="map-border">
+    <div id="app" class="fl-map__container">
+		<div class="fl-map__border">
+			<div class="fl-map__title">
+				<h1>Population Density, 2000 </h1>
+				<h2>Florida Counties, Jenks Natural Breaks </h2>
+			</div>
 			<div class="loading s-hidden">Loading... </div>
-			<h1 class="map-title">Florida Counties by Population </h1>
 			<div class="fl-map" id="mapid"></div>
-			<div class="north-arrow">
+			<figure class="fl-map__north-arrow">
 				<!-- Created with Inkscape (http://www.inkscape.org/) -->
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
@@ -32,36 +35,65 @@
 					/>
 				  </g>
 				</svg>
-			</div>
-			<figure class="legend">
-				<h1>People per square mile </h1>
-				<div>
-					<svg height="25px" width="25px" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-						<circle cx="25" cy="25" r="25" class="fl-map__outer-circle"/>
-						<circle cx="25" cy="25" r="6" class="fl-map__inner-circle"/>
-					</svg>
-					4000
+			</figure>
+			<figure class="fl-map__legend">
+				<h3>Persons per mi<sup>2</sup></h3>
+				<div class="fl-map__legend-cols">
+					<div class="fl-map__legend-col-left">
+						<div class="fl-map__legend-item">
+							<svg height="22px" width="22px" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+								<circle cx="11" cy="11" r="11" class="fl-map__outer-circle"/>
+								<circle cx="11" cy="11" r="3" class="fl-map__inner-circle"/>
+							</svg>
+						</div>
+						<div class="fl-map__legend-item">
+							<svg height="15px" width="15px" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg">
+								<circle cx="7.5" cy="7.5" r="7.5" class="fl-map__outer-circle"/>
+								<circle cx="7.5" cy="7.5" r="2" class="fl-map__inner-circle"/>
+							</svg>
+						</div>
+						<div class="fl-map__legend-item">
+							<svg height="10px" width="10px" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
+								<circle cx="5" cy="5" r="5" class="fl-map__outer-circle" />
+								<circle cx="5" cy="5" r="1"/ class="fl-map__inner-circle" />
+							</svg>
+						</div>
+						<div class="fl-map__legend-item">
+							<svg height="7px" width="7px" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg">
+								<circle cx="3.5" cy="3.5" r="3.5" class="fl-map__outer-circle" />
+								<circle cx="3.5" cy="3.5" r="1"/ class="fl-map__inner-circle" />
+							</svg>
+						</div>
+						<div class="fl-map__legend-item">
+							<svg height="4px" width="4px" viewBox="0 0 4 4" xmlns="http://www.w3.org/2000/svg">
+								<circle cx="2" cy="2" r="2" class="fl-map__outer-circle" />
+								<circle cx="2" cy="2" r="1"/ class="fl-map__inner-circle" />
+							</svg>
+						</div>
+					</div>
+					<div class="fl-map__legend-col-right">
+						<div class="fl-map__legend-item">
+							1330 - 3166
+						</div>
+						<div class="fl-map__legend-item">
+							564 - 1329
+						</div>
+						<div class="fl-map__legend-item">
+							269 - 563
+						</div>
+						<div class="fl-map__legend-item">
+							115 - 268
+						</div>
+						<div class="fl-map__legend-item">
+							8 - 114
+						</div>
+					</div>
 				</div>
-				<div>
-					<svg height="12px" width="25px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-						<circle cx="12" cy="12" r="12" class="fl-map__outer-circle"/>
-						<circle cx="12" cy="12" r="4" class="fl-map__inner-circle"/>
-					</svg>
-					1000
-				</div>
-				<div>
-					<svg height="5px" width="25px" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg">
-						<circle cx="5" cy="5" r="5" class="fl-map__outer-circle" />
-						<circle cx="5" cy="5" r="2"/ class="fl-map__inner-circle" />
-					</svg>
-					10
-				</div>
-				<small>Scale only valid at initial map zoom </small>
 			</figure>
 		</div>
-		<p class="attribution">Map projection: NAD 1983 <br />
-		Map source: Mapbox, FSU Thematic Cartography Canvas website <br />
-		Map by Jesse Fried </p>
+		<p class="fl-map__attribution">Map projection: NAD 1983 <br />
+		Map source: FSU Thematic Cartography Canvas website: map contest winner <br />
+		Web version by Jesse Fried </p>
 	</div>
 	<script src="index.js"></script>
     <noscript>

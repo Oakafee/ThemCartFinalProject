@@ -6,6 +6,6 @@ export default {
 	COUNTIES_CLASSNAME: 'fl-map__counties',
 	OUTER_CIRCLE_CLASSNAME: 'fl-map__outer-circle',
 	INNER_CIRCLE_CLASSNAME: 'fl-map__inner-circle',
-	OUTER_CIRCLE_SF: 3,
-	INNER_CIRCLE_SF: 1,
+	OUTER_CIRCLE_SF: 0.3,
+	INNER_CIRCLE_SF: 0.1,
 }
