@@ -1,17 +1,58 @@
-.container {
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.fl-map__container {
 	width: 820px;
 	margin: 0 auto;
 	position: relative;
 }	
-.map-border {
-	border: 1px solid black;
-	padding: 10px;
+.fl-map__border {
+	border: 3px double black;
 }
-.map-title {
-	margin: 0 0 5px 0;
+.fl-map__title {
+	position: absolute;
+	bottom: 450px;
+	left: 130px;
+	background-color: rgba(255,255,255,0.4);
+	z-index: 1;
+}
+.fl-map__title h1 {
+	font-weight: normal;
+	text-decoration: underline;
+	font-size: 21pt;
+	margin: 10px;
+}
+.fl-map__title h2 {
+	font-weight: normal;
+	font-size: 15pt;
+	margin: 0;
+}
+.loading {
+	position: absolute;
+	z-index: 401;
+}
+.fl-map__popup {
+	text-align: right;
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	margin: 0;
+	font-size: 10pt;
+	background-color: rgba(255,255,255,0.4);
+	z-index: 1;
+}
+.fl-map__popup--empty {
+	font-style: italic;
+}
+.fl-map__popup h3 {
+	font-size: 12pt;
+	margin: 0;
+}
+.fl-map__popup ul {
+	list-style-type: none;
+	margin: 0;
 	padding: 0;
-	font-size: 18pt;
-	text-align: center;
 }
 .fl-map {
 	width: 800px;
@@ -23,51 +64,34 @@
 	stroke: gray;
 	stroke-width: 0.6px;
 }
-.fl-map__outer-circle {
-	stroke: none;
-	fill: red;
-	fill-opacity: 1;
-}
-.fl-map__inner-circle {
-	stroke: none;
-	fill: rgba(233, 255, 189, 1);
-	fill-opacity: 1;
-}
-.loading {
-	position: absolute;
-	z-index: 401;
-}
 .s-hidden {
 	display: none;
 }
-.north-arrow {
+.fl-map__legend {
+	font-size: 14pt;
+}
+.fl-map__legend.ol-legend.ol-control {
+/* weird override of default positioning */
+	bottom: 110px;
+	left: 220px;
+}
+.fl-map__legend .ol-title {
+/* another weird override */
+	font-family: Georgia, Times New Roman, serif;
+}
+.fl-map__attribution {
+	font-size: 9pt;
+	text-align: right;
+}
+.fl-map__scalebar {
 	position: absolute;
-	bottom: 12%;
-	left: 3%;
-	z-index: 400;
+	bottom: 40px;
+	left: 175px;
 }
-.legend {
+.fl-map__north-arrow {
 	position: absolute;
-	bottom: 50%;
-	left: 3%;
-	z-index: 400;
-	background-color: white;
-	border: 1px solid black;
-	padding: 10px;
-}
-.legend h1 {
-	font-size: 12pt;
-}
-.popup h1 {
-	font-size: 12pt;
-	margin: 0;
-}
-.popup ul {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-}
-.attribution {
-	margin: 2px;
-	font-size: 10pt;
+	bottom: 72px;
+	left: 500px;
+	z-index: 1;
+	background-color: rgba(255,255,255,0.4);
 }

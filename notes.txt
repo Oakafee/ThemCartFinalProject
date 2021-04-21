@@ -2,6 +2,7 @@ leaflet limitations:
 - cannot set zoom/scale exactly...only certain pre-defined levels
 - Hard to customize appearance of scalebar
 - No built in north arrow, must be custom added
+->>>>Try rendering as a canvas: https://leafletjs.com/reference-1.7.1.html#canvas
 
 d3 stuff
 one path or multiple path for polygons
@@ -38,5 +39,8 @@ osm stuff:
 - <canvas> vs <svg>: Can't do as much with CSS
 - compare file sizes
 - have to do coordinate transformation manually (using package)
+- Cheap bounds calcuation
+- Text labels (can Leaflet do it? Prob but maybe not as easily) but not positioned as well
+- So many imports
 
 EPSG:4269

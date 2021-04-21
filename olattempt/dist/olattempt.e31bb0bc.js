@@ -190,6 +190,12 @@ module.exports = reloadCSS;
         module.hot.dispose(reloadCSS);
         module.hot.accept(reloadCSS);
       
+},{"_css_loader":"../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"node_modules/ol-ext/dist/ol-ext.css":[function(require,module,exports) {
+
+        var reloadCSS = require('_css_loader');
+        module.hot.dispose(reloadCSS);
+        module.hot.accept(reloadCSS);
+      
 },{"_css_loader":"../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/css-loader.js"}],"styles.css":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
@@ -105439,7 +105445,7 @@ var _default = {
   MAP_CENTER: [-84.0, 27.8],
   // order of coordinates reverse from leaflet
   //MAP_ZOOM: 7,
-  MAP_RESOLUTION: 0.018,
+  MAP_RESOLUTION: 0.011,
   //scale units per pixel
   COUNTIES_STYLE: {
     STROKE: {
@@ -105451,7 +105457,54 @@ var _default = {
       opacity: 1
     }
   },
-  OUTER_CIRCLE_SF: 3
+  COUNTY_NAME_STYLE: {
+    FONT: '6px sans-serif',
+    OFFSET_Y: -8
+  },
+  CIRCLES_STYLE: {
+    OUTER: {
+      FILL: {
+        color: 'red'
+      },
+      SCALE_FACTOR: 0.3
+    },
+    INNER: {
+      FILL: {
+        color: 'rgba(233,255,189,1)'
+      },
+      SCALE_FACTOR: 0.1
+    }
+  },
+  SCALEBAR: {
+    BAR: true,
+    STEPS: 4,
+    MINWIDTH: 200,
+    UNITS: 'us',
+    CLASSNAME: 'fl-map__scalebar'
+  },
+  LEGEND: {
+    COLLAPSIBLE: false,
+    TITLE: 'Persons per mi<sup>2</sup>',
+    MARGIN: 8,
+    CLASSNAME: 'fl-map__legend ol-legend',
+    CLASSES: [{
+      TITLE: '1330 - 3166',
+      VALUE: 3166
+    }, {
+      TITLE: '564 - 1329',
+      VALUE: 1329
+    }, {
+      TITLE: '269 - 563',
+      VALUE: 563
+    }, {
+      TITLE: '115 - 268',
+      VALUE: 268
+    }, {
+      TITLE: '8 - 114',
+      VALUE: 114
+    }]
+  },
+  POPUP_EMPTY_TEXT: '<span class="fl-map__popup--empty">Hover over a county for details</span>'
 };
 exports.default = _default;
 },{}],"node_modules/ol/proj/proj4.js":[function(require,module,exports) {
@@ -105541,10 +105594,431 @@ function register(proj4) {
     }
   }
 }
-},{"./Projection.js":"node_modules/ol/proj/Projection.js","./Units.js":"node_modules/ol/proj/Units.js","../proj.js":"node_modules/ol/proj.js","../obj.js":"node_modules/ol/obj.js","./transforms.js":"node_modules/ol/proj/transforms.js"}],"index.js":[function(require,module,exports) {
+},{"./Projection.js":"node_modules/ol/proj/Projection.js","./Units.js":"node_modules/ol/proj/Units.js","../proj.js":"node_modules/ol/proj.js","../obj.js":"node_modules/ol/obj.js","./transforms.js":"node_modules/ol/proj/transforms.js"}],"node_modules/ol-ext/util/ext.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = exports.ol_ext_inherits = void 0;
+
+/** @namespace  ol.ext
+ */
+
+/*global ol*/
+if (window.ol && !ol.ext) {
+  ol.ext = {};
+}
+/** Inherit the prototype methods from one constructor into another.
+ * replace deprecated ol method
+ *
+ * @param {!Function} childCtor Child constructor.
+ * @param {!Function} parentCtor Parent constructor.
+ * @function module:ol.inherits
+ * @api
+ */
+
+
+var ol_ext_inherits = function (child, parent) {
+  child.prototype = Object.create(parent.prototype);
+  child.prototype.constructor = child;
+}; // Compatibilty with ol > 5 to be removed when v6 is out
+
+
+exports.ol_ext_inherits = ol_ext_inherits;
+
+if (window.ol) {
+  if (!ol.inherits) ol.inherits = ol_ext_inherits;
+}
+/* IE Polyfill */
+// NodeList.forEach
+
+
+if (window.NodeList && !NodeList.prototype.forEach) {
+  NodeList.prototype.forEach = Array.prototype.forEach;
+} // Element.remove
+
+
+if (window.Element && !Element.prototype.remove) {
+  Element.prototype.remove = function () {
+    if (this.parentNode) this.parentNode.removeChild(this);
+  };
+}
+/* End Polyfill */
+
+
+var _default = ol_ext_inherits;
+exports.default = _default;
+},{}],"node_modules/ol-ext/control/Legend.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _ext = _interopRequireDefault(require("../util/ext"));
+
+var _has = require("ol/has");
+
+var _Control = _interopRequireDefault(require("ol/control/Control"));
+
+var _render = require("ol/render");
+
+var _Feature = _interopRequireDefault(require("ol/Feature"));
+
+var _Point = _interopRequireDefault(require("ol/geom/Point"));
+
+var _LineString = _interopRequireDefault(require("ol/geom/LineString"));
+
+var _Polygon = _interopRequireDefault(require("ol/geom/Polygon"));
+
+var _extent = require("ol/extent");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/** Create a legend for styles
+ * @constructor
+ * @fires select
+ * @param {*} options
+ *  @param {String} options.className class of the control
+ *  @param {String} options.title Legend title
+ *  @param {ol.size | undefined} options.size Size of the symboles in the legend, default [40, 25]
+ *  @param {int | undefined} options.margin Size of the symbole's margin, default 10
+ *  @param {boolean | undefined} options.collapsed Specify if attributions should be collapsed at startup. Default is true.
+ *  @param {boolean | undefined} options.collapsible Specify if attributions can be collapsed, default true.
+ *  @param {Element | string | undefined} options.target Specify a target if you want the control to be rendered outside of the map's viewport.
+ *  @param { ol.style.Style | Array<ol.style.Style> | ol.StyleFunction | undefined	} options.style a style or a style function to use with features
+ * @extends {ol_control_Control}
+ */
+var ol_control_Legend = function (options) {
+  options = options || {};
+  var element = document.createElement('div');
+
+  if (options.target) {
+    element.className = options.className || "ol-legend";
+  } else {
+    element.className = (options.className || "ol-legend") + " ol-unselectable ol-control ol-collapsed" + (options.collapsible === false ? ' ol-uncollapsible' : ''); // Show on click
+
+    var button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.addEventListener('click', function () {
+      this.toggle();
+    }.bind(this));
+    element.appendChild(button); // Hide on click
+
+    button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.className = 'ol-closebox';
+    button.addEventListener('click', function () {
+      this.toggle();
+    }.bind(this));
+    element.appendChild(button);
+  } // The legend
+
+
+  this._imgElement = document.createElement('div');
+  this._imgElement.className = 'ol-legendImg';
+  element.appendChild(this._imgElement);
+  this._tableElement = document.createElement('ul');
+  element.appendChild(this._tableElement);
+
+  _Control.default.call(this, {
+    element: element,
+    target: options.target
+  });
+
+  this._rows = [];
+  this.set('size', options.size || [40, 25]);
+  this.set('margin', options.margin === 0 ? 0 : options.margin || 10);
+  this.set('title', options.title || ''); // Set the style
+
+  this._style = options.style;
+  if (options.collapsed === false) this.show();
+  this.refresh();
+};
+
+(0, _ext.default)(ol_control_Legend, _Control.default);
+/** Set the style
+ * @param { ol.style.Style | Array<ol.style.Style> | ol.StyleFunction | undefined	} style a style or a style function to use with features
+ */
+
+ol_control_Legend.prototype.setStyle = function (style) {
+  this._style = style;
+  this.refresh();
+};
+/** Add a new row to the legend
+ *  * You can provide in options:
+ * - a feature width a style 
+ * - or a feature that will use the legend style function
+ * - or properties ans a geometry type that will use the legend style function
+ * - or a style and a geometry type
+ * @param {*} options a list of parameters 
+ *  @param {ol.Feature} options.feature a feature to draw
+ *  @param {string} options.className class name for the row
+ *  @param {ol.style.Style} options.style the style to use if no feature is provided
+ *  @param {*} options.properties properties to use with a style function
+ *  @param {string} options.typeGeom type geom to draw with the style or the properties
+ */
+
+
+ol_control_Legend.prototype.addRow = function (row) {
+  this._rows.push(row || {});
+
+  this.refresh();
+};
+/** Remove a row from the legend
+ *  @param {int} index
+ */
+
+
+ol_control_Legend.prototype.removeRow = function (index) {
+  this._rows.splice(index, 1);
+
+  this.refresh();
+};
+/** Get a legend row
+ * @param {int} index
+ * @return {*}
+ */
+
+
+ol_control_Legend.prototype.getRow = function (index) {
+  return this._rows[index];
+};
+/** Get a legend row
+ * @return {int}
+ */
+
+
+ol_control_Legend.prototype.getLength = function () {
+  return this._rows.length;
+};
+/** Refresh the legend
+ */
+
+
+ol_control_Legend.prototype.refresh = function () {
+  var self = this;
+  var table = this._tableElement;
+  table.innerHTML = '';
+  var width = this.get('size')[0] + 2 * this.get('margin');
+  var height = this.get('size')[1] + 2 * this.get('margin'); // Add a new row
+
+  function addRow(str, classname, r, i) {
+    var row = document.createElement('li');
+    row.style.height = height + 'px';
+    row.addEventListener('click', function () {
+      self.dispatchEvent({
+        type: 'select',
+        title: str,
+        row: r,
+        index: i
+      });
+    });
+    var col = document.createElement('div');
+    row.appendChild(col);
+    col.style.height = height + 'px';
+    col = document.createElement('div');
+
+    if (classname) {
+      row.className = classname;
+    } else {
+      col.style.paddingLeft = width + 'px';
+    }
+
+    col.innerHTML = str || '';
+    row.appendChild(col);
+    table.appendChild(row);
+  }
+
+  if (this.get('title')) {
+    addRow(this.get('title'), 'ol-title', {}, -1);
+  }
+
+  var canvas = document.createElement('canvas');
+  canvas.width = 5 * width;
+  canvas.height = (this._rows.length + 1) * height * _has.DEVICE_PIXEL_RATIO;
+  this._imgElement.innerHTML = '';
+
+  this._imgElement.appendChild(canvas);
+
+  this._imgElement.style.height = (this._rows.length + 1) * height + 'px';
+
+  for (var i = 0, r; r = this._rows[i]; i++) {
+    addRow(r.title, r.className, r, i);
+    canvas = this.getStyleImage(r, canvas, i + (this.get('title') ? 1 : 0));
+  }
+};
+/** Show control
+ */
+
+
+ol_control_Legend.prototype.show = function () {
+  if (this.element.classList.contains('ol-collapsed')) {
+    this.element.classList.remove('ol-collapsed');
+    this.dispatchEvent({
+      type: 'change:collapse',
+      collapsed: false
+    });
+  }
+};
+/** Hide control
+ */
+
+
+ol_control_Legend.prototype.hide = function () {
+  if (!this.element.classList.contains('ol-collapsed')) {
+    this.element.classList.add('ol-collapsed');
+    this.dispatchEvent({
+      type: 'change:collapse',
+      collapsed: true
+    });
+  }
+};
+/** Toggle control
+ */
+
+
+ol_control_Legend.prototype.toggle = function () {
+  this.element.classList.toggle('ol-collapsed');
+  this.dispatchEvent({
+    type: 'change:collapse',
+    collapsed: this.element.classList.contains('ol-collapsed')
+  });
+};
+/** Get the image for a style 
+ * You can provide in options:
+ * - a feature width a style 
+ * - or a feature that will use the legend style function
+ * - or properties and a geometry type that will use the legend style function
+ * - or a style and a geometry type
+ * @param {*} options
+ *  @param {ol.Feature} options.feature a feature to draw
+ *  @param {ol.style.Style} options.style the style to use if no feature is provided
+ *  @param {*} options.properties properties to use with a style function
+ *  @param {string} options.typeGeom type geom to draw with the style or the properties
+ * @param {Canvas|undefined} canvas a canvas to draw in
+ * @param {int|undefined} row row number to draw in canvas
+ * @return {CanvasElement}
+ */
+
+
+ol_control_Legend.prototype.getStyleImage = function (options, theCanvas, row) {
+  options = options || {};
+  var size = this.get('size');
+  var width = size[0] + 2 * this.get('margin');
+  var height = size[1] + 2 * this.get('margin');
+  var canvas = theCanvas;
+  var ratio = _has.DEVICE_PIXEL_RATIO;
+
+  if (!canvas) {
+    canvas = document.createElement('canvas');
+    canvas.width = width * ratio;
+    canvas.height = height * ratio;
+  }
+
+  var ctx = canvas.getContext('2d');
+  ctx.save();
+  var vectorContext = (0, _render.toContext)(ctx);
+  var typeGeom = options.typeGeom;
+  var style;
+  var feature = options.feature;
+
+  if (!feature && options.properties && typeGeom) {
+    if (/Point/.test(typeGeom)) feature = new _Feature.default(new _Point.default([0, 0]));else if (/LineString/.test(typeGeom)) feature = new _Feature.default(new _LineString.default([0, 0]));else feature = new _Feature.default(new _Polygon.default([[0, 0]]));
+    feature.setProperties(options.properties);
+  }
+
+  if (feature) {
+    style = feature.getStyle();
+    if (typeof style === 'function') style = style(feature);
+
+    if (!style) {
+      style = typeof this._style === 'function' ? this._style(feature) : this._style || [];
+    }
+
+    typeGeom = feature.getGeometry().getType();
+  } else {
+    style = options.style;
+  }
+
+  if (!(style instanceof Array)) style = [style];
+  var cx = width / 2;
+  var cy = height / 2;
+  var sx = size[0] / 2;
+  var sy = size[1] / 2;
+  var i, s; // Get point offset
+
+  if (typeGeom === 'Point') {
+    var extent = null;
+
+    for (i = 0; s = style[i]; i++) {
+      var img = s.getImage();
+
+      if (img && img.getAnchor) {
+        var anchor = img.getAnchor();
+        var si = img.getSize();
+        var dx = anchor[0] - si[0];
+        var dy = anchor[1] - si[1];
+
+        if (!extent) {
+          extent = [dx, dy, dx + si[0], dy + si[1]];
+        } else {
+          (0, _extent.extend)(extent, [dx, dy, dx + si[0], dy + si[1]]);
+        }
+      }
+    }
+
+    if (extent) {
+      cx = cx + (extent[2] + extent[0]) / 2;
+      cy = cy + (extent[3] + extent[1]) / 2;
+    }
+  } // Draw image
+
+
+  cy += theCanvas ? row * height : 0;
+
+  for (i = 0; s = style[i]; i++) {
+    vectorContext.setStyle(s);
+
+    switch (typeGeom) {
+      case _Point.default:
+      case 'Point':
+      case 'MultiPoint':
+        vectorContext.drawGeometry(new _Point.default([cx, cy]));
+        break;
+
+      case _LineString.default:
+      case 'LineString':
+      case 'MultiLineString':
+        ctx.save();
+        ctx.rect(this.get('margin') * ratio, 0, size[0] * ratio, canvas.height);
+        ctx.clip();
+        vectorContext.drawGeometry(new _LineString.default([[cx - sx, cy], [cx + sx, cy]]));
+        ctx.restore();
+        break;
+
+      case _Polygon.default:
+      case 'Polygon':
+      case 'MultiPolygon':
+        vectorContext.drawGeometry(new _Polygon.default([[[cx - sx, cy - sy], [cx + sx, cy - sy], [cx + sx, cy + sy], [cx - sx, cy + sy], [cx - sx, cy - sy]]]));
+        break;
+    }
+  }
+
+  ctx.restore();
+  return canvas;
+};
+
+var _default = ol_control_Legend;
+exports.default = _default;
+},{"../util/ext":"node_modules/ol-ext/util/ext.js","ol/has":"node_modules/ol/has.js","ol/control/Control":"node_modules/ol/control/Control.js","ol/render":"node_modules/ol/render.js","ol/Feature":"node_modules/ol/Feature.js","ol/geom/Point":"node_modules/ol/geom/Point.js","ol/geom/LineString":"node_modules/ol/geom/LineString.js","ol/geom/Polygon":"node_modules/ol/geom/Polygon.js","ol/extent":"node_modules/ol/extent.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 require("ol/ol.css");
+
+require("ol-ext/dist/ol-ext.css");
 
 require("./styles.css");
 
@@ -105572,6 +106046,10 @@ var _proj2 = require("ol/proj/proj4");
 
 var _proj3 = require("ol/proj");
 
+var _ScaleLine = _interopRequireDefault(require("ol/control/ScaleLine"));
+
+var _Legend = _interopRequireDefault(require("ol-ext/control/Legend"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _proj.default.defs('EPSG:4269');
@@ -105579,11 +106057,13 @@ _proj.default.defs('EPSG:4269');
 (0, _proj2.register)(_proj.default);
 var flMap = new _ol2.Map({
   target: 'map',
-  layers: [new _layer.Tile({
-    source: new _source.Stamen({
-      layer: 'toner-lite'
+  layers: [
+    /*
+    new TileLayer({
+     source: new Stamen({layer:'toner-lite'})
     })
-  })],
+    */
+  ],
   view: new _ol2.View({
     center: _constants.default.MAP_CENTER,
     resolution: _constants.default.MAP_RESOLUTION,
@@ -105600,7 +106080,6 @@ function loadCountyData() {
 
   _axios.default.get(_constants.default.FL_COUNTIES_URL).then(function (response) {
     countyData = response.data;
-    console.log(countyData.crs.properties.name);
     addCountyData();
     loading.classList.add('s-hidden');
   }).catch(function (error) {
@@ -105609,6 +106088,7 @@ function loadCountyData() {
 }
 
 function getFeatureStyle(feature) {
+  var countyName = feature.get('NAME') ? feature.get('NAME').toUpperCase() : '';
   var popDensity = feature.get('POP2000') / feature.get('SQMI');
   var center = (0, _extent.getCenter)(feature.getGeometry().getExtent()); //console.log(getCenter(feature.getGeometry().getExtent()));
 
@@ -105617,34 +106097,29 @@ function getFeatureStyle(feature) {
     fill: new _style.Fill(_constants.default.COUNTIES_STYLE.FILL)
   }), new _style.Style({
     image: new _style.Circle({
-      radius: Math.sqrt(popDensity / Math.PI),
-      fill: new _style.Fill({
-        color: [0, 128, 255, .3]
-      }),
+      radius: Math.sqrt(popDensity / Math.PI) * _constants.default.CIRCLES_STYLE.OUTER.SCALE_FACTOR + 1.5,
+      fill: new _style.Fill(_constants.default.CIRCLES_STYLE.OUTER.FILL)
+    }),
+    geometry: new _geom.Point(center),
+    text: new _style.Text({
+      text: countyName,
+      font: _constants.default.COUNTY_NAME_STYLE.FONT,
+      offsetY: _constants.default.COUNTY_NAME_STYLE.OFFSET_Y,
       stroke: new _style.Stroke({
-        width: 1,
-        color: [0, 128, 255]
+        width: 2,
+        color: 'white'
+      }),
+      fill: new _style.Fill({
+        color: 'gray'
       })
+    })
+  }), new _style.Style({
+    image: new _style.Circle({
+      radius: Math.sqrt(popDensity / Math.PI) * _constants.default.CIRCLES_STYLE.INNER.SCALE_FACTOR + 0.5,
+      fill: new _style.Fill(_constants.default.CIRCLES_STYLE.INNER.FILL)
     }),
     geometry: new _geom.Point(center)
-  })
-  /*
-  new Style({
-  	image: new Circle({
-  	  'radius': constants.OUTER_CIRCLE_SF*popDensity + 3000,
-  	  //radius: Math.sqrt(feature.get('pop')/Math.PI) / 50, 
-  	  fill: new Fill ({
-  		color: [0,128,255,.3],
-  	  }),
-  	  stroke: new Stroke ({
-  		width: 1,
-  		color: [0,128,255],
-  	  })
-  	}),
-  	//geometry: new Point([-84.0, 27.8])
-  })
-  */
-  ];
+  })];
 }
 
 function addCountyData() {
@@ -105658,10 +106133,72 @@ function addCountyData() {
     style: getFeatureStyle
   });
   flMap.addLayer(countiesLayer);
+  dressItUp();
+}
+
+function dressItUp() {
+  flMap.addControl(new _ScaleLine.default({
+    'bar': _constants.default.SCALEBAR.BAR,
+    'steps': _constants.default.SCALEBAR.STEPS,
+    'units': _constants.default.SCALEBAR.UNITS,
+    'minWidth': _constants.default.SCALEBAR.MINWIDTH,
+    'className': _constants.default.SCALEBAR.CLASSNAME
+  }));
+  addLegend();
+  addPopUpInteraction();
+}
+
+function addLegend() {
+  var legend = new _Legend.default({
+    collapsible: _constants.default.LEGEND.COLLAPSIBLE,
+    title: _constants.default.LEGEND.TITLE,
+    style: getFeatureStyle,
+    margin: _constants.default.LEGEND.MARGIN,
+    className: _constants.default.LEGEND.CLASSNAME
+  });
+  flMap.addControl(legend);
+
+  _constants.default.LEGEND.CLASSES.forEach(function (lclass) {
+    legend.addRow({
+      'title': lclass.TITLE,
+      'properties': {
+        'POP2000': lclass.VALUE,
+        'SQMI': 1
+      },
+      typeGeom: 'Point'
+    });
+  });
+}
+
+;
+
+function addPopUpInteraction() {
+  var selected = null;
+  var status = document.getElementById('status');
+  flMap.on('pointermove', function (e) {
+    if (selected !== null) {
+      selected.setStyle(undefined);
+      selected = null;
+    }
+
+    flMap.forEachFeatureAtPixel(e.pixel, function (f) {
+      selected = f; //f.setStyle(highlightStyle);
+
+      return true;
+    });
+
+    if (selected) {
+      var prettyPop = selected.get('POP2000').toLocaleString();
+      var density = Math.round(selected.get('POP2000') / selected.get('SQMI'));
+      status.innerHTML = "\n\t\t\t<h3>".concat(selected.get('NAME'), " County</h3>\n\t\t\t<ul>\n\t\t\t\t<li><strong>Population (2000):</strong> ").concat(prettyPop, " </li>\n\t\t\t\t<li><strong>Density:</strong> ").concat(density, " people / mi<sup>2</sup></li>\n\t\t\t</ul>\n\t\t\t");
+    } else {
+      status.innerHTML = _constants.default.POPUP_EMPTY_TEXT;
+    }
+  });
 }
 
 loadCountyData(); //document.addEventListener('DOMContentLoaded', loadCountyData);
-},{"ol/ol.css":"node_modules/ol/ol.css","./styles.css":"styles.css","ol":"node_modules/ol/index.js","axios":"node_modules/axios/index.js","proj4":"node_modules/proj4/lib/index.js","ol/format/GeoJSON":"node_modules/ol/format/GeoJSON.js","ol/source":"node_modules/ol/source.js","ol/layer":"node_modules/ol/layer.js","ol/style":"node_modules/ol/style.js","ol/geom":"node_modules/ol/geom.js","ol/extent":"node_modules/ol/extent.js","./constants":"constants.js","ol/proj/proj4":"node_modules/ol/proj/proj4.js","ol/proj":"node_modules/ol/proj.js"}],"../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"ol/ol.css":"node_modules/ol/ol.css","ol-ext/dist/ol-ext.css":"node_modules/ol-ext/dist/ol-ext.css","./styles.css":"styles.css","ol":"node_modules/ol/index.js","axios":"node_modules/axios/index.js","proj4":"node_modules/proj4/lib/index.js","ol/format/GeoJSON":"node_modules/ol/format/GeoJSON.js","ol/source":"node_modules/ol/source.js","ol/layer":"node_modules/ol/layer.js","ol/style":"node_modules/ol/style.js","ol/geom":"node_modules/ol/geom.js","ol/extent":"node_modules/ol/extent.js","./constants":"constants.js","ol/proj/proj4":"node_modules/ol/proj/proj4.js","ol/proj":"node_modules/ol/proj.js","ol/control/ScaleLine":"node_modules/ol/control/ScaleLine.js","ol-ext/control/Legend":"node_modules/ol-ext/control/Legend.js"}],"../../../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -105689,7 +106226,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54881" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62303" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
