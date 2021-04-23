@@ -1,0 +1,97 @@
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.fl-map__container {
+	width: 820px;
+	margin: 0 auto;
+	position: relative;
+}	
+.fl-map__border {
+	border: 3px double black;
+}
+.fl-map__title {
+	position: absolute;
+	bottom: 450px;
+	left: 130px;
+	background-color: rgba(255,255,255,0.4);
+	z-index: 1;
+}
+.fl-map__title h1 {
+	font-weight: normal;
+	text-decoration: underline;
+	font-size: 21pt;
+	margin: 10px;
+}
+.fl-map__title h2 {
+	font-weight: normal;
+	font-size: 15pt;
+	margin: 0;
+}
+.loading {
+	position: absolute;
+	z-index: 401;
+}
+.fl-map__popup {
+	text-align: right;
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	margin: 0;
+	font-size: 10pt;
+	background-color: rgba(255,255,255,0.4);
+	z-index: 1;
+}
+.fl-map__popup--empty {
+	font-style: italic;
+}
+.fl-map__popup h3 {
+	font-size: 12pt;
+	margin: 0;
+}
+.fl-map__popup ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+.fl-map {
+	width: 800px;
+	height: 700px;
+}
+.fl-map__counties {
+	fill: rgba(233, 255, 189, 1);
+	fill-opacity: 1;
+	stroke: gray;
+	stroke-width: 0.6px;
+}
+.s-hidden {
+	display: none;
+}
+.fl-map__legend {
+	font-size: 14pt;
+}
+.fl-map__legend.ol-legend.ol-control {
+/* weird override of default positioning */
+	bottom: 110px;
+	left: 220px;
+}
+.fl-map__legend .ol-title {
+/* another weird override */
+	font-family: Georgia, Times New Roman, serif;
+}
+.fl-map__attribution {
+	font-size: 9pt;
+	text-align: right;
+}
+.fl-map__scalebar {
+	position: absolute;
+	bottom: 40px;
+	left: 175px;
+}
+.fl-map__north-arrow {
+	position: absolute;
+	bottom: 72px;
+	left: 500px;
+	z-index: 1;
+	background-color: rgba(255,255,255,0.4);
+}

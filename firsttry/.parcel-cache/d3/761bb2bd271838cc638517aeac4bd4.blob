@@ -1,0 +1,92 @@
+require('leaflet/dist/leaflet.css');
+require('./styles.css');
+var _leaflet = require('leaflet');
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+var _leafletDefault = _parcelHelpers.interopDefault(_leaflet);
+var _axios = require('axios');
+var _axiosDefault = _parcelHelpers.interopDefault(_axios);
+var _constants = require('./constants');
+var _constantsDefault = _parcelHelpers.interopDefault(_constants);
+let flMap = _leafletDefault.default.map('mapid', {
+  center: _constantsDefault.default.MAP_CENTER,
+  zoom: 7,
+  zoomControl: false,
+  scrollWheelZoom: false,
+  attributionControl: false
+});
+let countyData = {};
+let countyLayer = {};
+function createMap() {
+  _leafletDefault.default.tileLayer(_constantsDefault.default.BASEMAP_URL, {
+    maxZoom: 18,
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' + 'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1
+  }).addTo(flMap);
+}
+function loadCountyData() {
+  const loading = document.querySelector('.loading');
+  loading.classList.remove('s-hidden');
+  _axiosDefault.default.get(_constantsDefault.default.FL_COUNTIES_URL).then(response => {
+    countyData = response.data;
+    addCountyData();
+    loading.classList.add('s-hidden');
+  }).catch(error => {
+    console.log(error);
+  });
+}
+function addCountyData() {
+  countyLayer = _leafletDefault.default.geoJSON(countyData, {
+    'style': {
+      'className': _constantsDefault.default.COUNTIES_CLASSNAME
+    },
+    'onEachFeature': (feature, layer) => {
+      layer.bindPopup(writePopup(feature.properties));
+    }
+  }).addTo(flMap);
+  console.log(_constantsDefault.default.HELLO);
+  drawCenterSymbols();
+}
+;
+function drawCenterSymbols() {
+  countyData.features.forEach(feature => {
+    const center = _leafletDefault.default.polygon(feature.geometry.coordinates).getBounds().getCenter();
+    // console.log(feature.properties);
+    const popDensity = feature.properties.POP2000 / feature.properties.SQMI;
+    _leafletDefault.default.circleMarker([center.lng, center.lat], {
+      'radius': Math.sqrt(popDensity / Math.PI) * _constantsDefault.default.OUTER_CIRCLE_SF + 1.5,
+      // todo: clean up and make size dynamic
+      'className': _constantsDefault.default.OUTER_CIRCLE_CLASSNAME
+    }).bindPopup(writePopup(feature.properties)).addTo(flMap);
+    _leafletDefault.default.circleMarker([center.lng, center.lat], {
+      'radius': Math.sqrt(popDensity / Math.PI) * _constantsDefault.default.INNER_CIRCLE_SF + 0.5,
+      'className': _constantsDefault.default.INNER_CIRCLE_CLASSNAME
+    }).addTo(flMap);
+  });
+}
+;
+function writePopup(props) {
+  const prettyPop = props.POP2000.toLocaleString();
+  const density = Math.round(props.POP2000 / props.SQMI);
+  return `
+			<div class='popup'>
+				<h1>${props.NAME} County</h1>
+				<ul>
+					<li><strong>Population (2000):</strong> ${prettyPop} </li>
+					<li><strong>Density:</strong> ${density} people / mi<sup>2</sup></li>
+				</ul>
+			</div>
+		`;
+}
+function dressItUp() {
+  _leafletDefault.default.control.scale({
+    'maxwidth': 400
+  }).addTo(flMap);
+  _leafletDefault.default.control.zoom({
+    'position': 'topright'
+  }).addTo(flMap);
+}
+createMap();
+loadCountyData();
+dressItUp();

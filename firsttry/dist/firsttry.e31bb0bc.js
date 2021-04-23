@@ -16173,7 +16173,9 @@ function writePopup(props) {
 }
 
 function dressItUp() {
-  _leaflet2.default.control.scale().addTo(flMap);
+  _leaflet2.default.control.scale({
+    'maxwidth': 400
+  }).addTo(flMap);
 
   _leaflet2.default.control.zoom({
     'position': 'topright'
@@ -16211,7 +16213,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49689" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57317" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

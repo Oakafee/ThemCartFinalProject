@@ -656,6 +656,7 @@ body {
 	left: 130px;
 	background-color: rgba(255,255,255,0.4);
 	z-index: 401;
+	padding: 0 5px 5px 5px;
 }
 .fl-map__title h1 {
 	font-weight: normal;
@@ -697,7 +698,7 @@ body {
 }
 .fl-map__legend {
 	position: absolute;
-	bottom: 150px;
+	bottom: 120px;
 	left: 220px;
 	z-index: 400;
 	background-color: rgba(255,255,255,0.4);
@@ -735,6 +736,7 @@ body {
 	left: 500px;
 	z-index: 400;
 	background-color: rgba(255,255,255,0.4);
+	padding: 10px 0 0 10px;
 }
 .fl-map__attribution {
 	font-size: 9pt;

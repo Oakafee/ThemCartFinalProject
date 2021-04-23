@@ -89,7 +89,7 @@ import constants from './constants';
 	}
 	
 	function dressItUp() {
-		L.control.scale().addTo(flMap);
+		L.control.scale({'maxwidth': 400}).addTo(flMap);
 		L.control.zoom({'position': 'topright'}).addTo(flMap);
 	}
 	
